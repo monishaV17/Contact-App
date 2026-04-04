@@ -7,7 +7,7 @@ app = Flask(__name__)
 SECRET_KEY="mysecretkey"
 blacklist=set()
 
-db=mysql.connector.connect(host="localhost", user="root", password="Monisha@123", database="contactdb")
+db=mysql.connector.connect(host="localhost", user="root", password="xyz", database="contactdb")
 cursor=db.cursor(dictionary=True)
 
 def verify_token():
