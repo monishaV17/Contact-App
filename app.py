@@ -24,25 +24,25 @@ def verify_token():
         print(f"Error: {str(e)}1")
         return None
 
-@app.route('/Signup', methods=['POST'])
+@app.route('/signup', methods=['POST'])
 def signup():
     data=request.json
     name=data.get('name')
     email=data.get('email')
     password=data.get('password')
     try:
-        cursor.execute("SELECT * FROM users WHERE email=%s",(email))
-        exisiting_user=cursor.fetchone
+        cursor.execute("SELECT * FROM users WHERE email=%s",(email,))
+        exisiting_user=cursor.fetchone()
         if exisiting_user:
             return {"message": "Email already exists"},409
-        cursor.execute("INSERT INTO users(name, email, password)VALUES(%s,%s,%s)")
+        cursor.execute("INSERT INTO users(name, email, password)VALUES(%s,%s,%s)",(name,email,password))
         db.commit()
         return {"message": "User Registered Successfully."}
     except Exception as e:
         print(f"Error:{str(e)}")
         return {"message": "signup failed"}
 
-@app.route('/Login', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def login():
     data=request.json
     email=data.get('email')
@@ -87,7 +87,7 @@ def get_contacts():
     if not user_id:
         return {"message": "Unauthorized"},401
     try:
-        cursor.execute("SELECT id, name, FROM contacts WHERE user_id=%s",(user_id))
+        cursor.execute("SELECT * FROM contacts WHERE user_id=%s",(user_id))
         contacts=cursor.fetchall()
         if not contacts:
             return {"message": "No Contacts"}
@@ -95,18 +95,6 @@ def get_contacts():
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"message": "Failed to load contacts"}
-
-@app.route('/contact_details/<int:id>', methods=['GET'])
-def contact_details(id):
-    user_id=verify_token()
-    if not user_id:
-        return {"message": "Unauthroized"},401
-    try:
-        cursor.execute("SELECT * FROM contacts WHERE id=%s AND user_id=%s",(id,user_id))
-        return (cursor.fetchAll())
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return {"message": "Error fetching details"}
 
 @app.route('/update/<int:id>', methods=['PUT'])
 def update_details(id):
