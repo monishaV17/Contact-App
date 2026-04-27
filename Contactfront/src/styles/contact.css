@@ -1,0 +1,71 @@
+body{
+    background: linear-gradient(to right, #bc7dd9, #a4e8e3);
+    margin: 0;
+}
+.contact-container{
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.contactDetail-form{
+  width: 90%;
+  max-width: 900px;
+  min-height: 350px;
+  background: #ffffffa3;              
+  border-radius: 24px;              
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  display: block;
+}
+.contactDetail-form h2{
+    font-size: 46px;
+    color:  #a633dc;
+    text-align: center;
+    margin: 10px 0 60px;
+}
+.form-row{
+    display: grid;
+    margin-bottom: 25px;
+    grid-template-columns: 1fr 1fr;
+    margin-left: 120px;
+}
+.form-group{
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+}
+.form-group label{
+    font-size: 15px;
+    font-weight:700;
+    color: #a633dc;
+}
+.form-group input{
+    height: 23px;
+    width: 180px;
+    border-radius: 5px;
+    border-color: #bc7dd9;
+
+}
+.btn-row{
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 50px 0 20px 30px;
+}
+.back-btn{
+    border-radius: 8px;
+    background-color:#c21ce050;
+    height: 35px;
+    cursor: pointer;
+    font-weight: 530;
+}
+.create-btn{
+    border-radius: 8px;
+    background-color: aquamarine;
+    height: 35px;
+    cursor: pointer;
+    font-weight: 530;
+    width: 70px;
+}
