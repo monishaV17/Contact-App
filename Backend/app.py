@@ -2,7 +2,10 @@ from flask import Flask,request
 import mysql.connector
 import jwt
 import datetime
-app = Flask(__name__) 
+from flask_cors import CORS
+app = Flask(__name__)
+
+CORS(app, origins=["https://localhost:3000"],supports_credentials=True,allow_headers=["Authorization","content-Type"])
 
 SECRET_KEY="mysecretkey"
 blacklist=set()
@@ -145,7 +148,7 @@ def logout():
         blacklist.add(token)
         return {"message": "Successfully logged out"}
     except Exception as e:
-        print(f"Error: str{e}")
+        print(f"Error: {str(e)}")
         return {"message": "Logout failed"} 
 
 if __name__=="__main__":
