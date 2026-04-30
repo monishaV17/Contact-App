@@ -3,7 +3,7 @@ import mysql.connector
 import jwt
 import datetime
 from flask_cors import CORS
-app = Flask(__name__)
+app=Flask(__name__)
 
 CORS(app, origins=["https://localhost:3000"],supports_credentials=True,allow_headers=["Authorization","content-Type"])
 
@@ -19,7 +19,7 @@ def verify_token():
     if not auth_header:
         return None
     try:
-        parts = auth_header.split(" ")
+        parts=auth_header.split(" ")
         print("PARTS:", parts) 
         token=parts[1]
         print("TOKEN:", token)
