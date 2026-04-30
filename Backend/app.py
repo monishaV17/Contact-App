@@ -68,7 +68,7 @@ def login():
             return {
                 "message": "Login successful",
                 "token": token
-            }
+            },200
         return {"message": "Invalid email or password"},401
     except Exception as e:
         print(f"Error:{str(e)}")
@@ -87,7 +87,7 @@ def add_contact():
     try:
         cursor.execute("INSERT INTO contacts(user_id,name,email,phone_no,location)VALUES(%s,%s,%s,%s,%s)",(user_id,name,email,phone_no,location))
         db.commit()
-        return {"message": "Contact added Successfully."}
+        return {"message": "Contact added Successfully."},201
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"message": "Failed to add contact"}
@@ -101,7 +101,7 @@ def get_contacts():
         cursor.execute("SELECT id,name,phone_no,email,location,created_at FROM contacts WHERE user_id=%s",(user_id,))
         contacts=cursor.fetchall()
         if not contacts:
-            return {"message": "No Contacts Available."}
+            return {"message": "No Contacts Available."},404
         return {"contacts": contacts},200
     except Exception as e:
         print(f"Error: {str(e)}")
@@ -120,7 +120,7 @@ def update_details(id):
     try:
         cursor.execute("UPDATE contacts SET name=%s, email=%s, phone_no=%s, location=%s WHERE id=%s AND user_id=%s",(name,email,phone_no,location,id,user_id))
         db.commit()
-        return {"message": "Details Updated"}
+        return {"message": "Details Updated"},200
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"message": "Update failed"}
@@ -134,8 +134,8 @@ def delete(id):
         cursor.execute("DELETE FROM contacts WHERE id=%s and user_id=%s",(id,user_id))
         db.commit()
         if cursor.rowcount==0:
-            return {"message": "No contacts found"}
-        return {"message": "Contact deleted successfully."}
+            return {"message": "Contacts not found"},404
+        return {"message": "Contact deleted successfully."},200
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"message": "Failed to delete contact"}
@@ -146,7 +146,7 @@ def logout():
     try:
         token=auth_header.split(" ")[1]
         blacklist.add(token)
-        return {"message": "Successfully logged out"}
+        return {"message": "Successfully logged out"},200
     except Exception as e:
         print(f"Error: {str(e)}")
         return {"message": "Logout failed"} 
