@@ -1,13 +1,42 @@
 import "./styles/ContactDetail.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+const API_URL="http://127.0.0.1:5000";
+
 function ContactShow(){
     const [search,setSearch]=useState("");
+    const [contacts,setContacts]=useState("");
+    const [message,setMessage]=useState("");
     const navigate=useNavigate();
+
+    useEffect(()=>{fetchContacts();},[]);
+
+    const fetchContacts= async () =>{
+        const token=localStorage.getItem("token");
+    try{
+        const res=await fetch(`${API_URL}/getContact`,{
+            headers: {Authorization: `Bearer ${token}`}
+    });
+        const data=await res.json();
+        if(res.ok){
+            setContacts(data.contacts || []);
+        }
+        else{
+            setMessage(data?.message || "Failed to fetch contacts");
+        }
+    }
+    catch(error){
+        setMessage("Failed to connect server");
+    }
+    }
+    const displayContacts=search.trim() ? 
+        contacts.filter((contact)=>
+            contact.name.toLowerCase().includes(search.toLowerCase())):contacts;
     return (
             <div className="container">
                 <div className="top-bar">
-                    <h2>Contacts</h2>
+                    <h2>All Contacts ({contacts.length})</h2>
                     <button className="logout-btn" type="button" onClick={() => navigate("/")}>⏻</button>
                 </div>
                 <div className="contact-search-wrapper">
@@ -19,6 +48,7 @@ function ContactShow(){
                         <button className="search-btn" type="submit">Search</button>
                     </form>
                 </div>
+                {message && <p className="message">{message}</p>}
                 <div className="table">
                     <table>
                         <thead>
@@ -33,17 +63,25 @@ function ContactShow(){
                         </thead>
 
                         <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            {displayContacts.length>0 ? (displayContacts.map((contact)=>(
+                            <tr key={contact.id}>
+                                <td>{contact.name}</td>
+                                <td>{contact.phone_no}</td>
+                                <td>{contact.email}</td>
+                                <td>{contact.location}</td>
+                                <td>{contact.created_at}</td>
                                 <td className="action">
                                 <button className="edit-btn" type="button" onClick={() => navigate("/update")}>✎</button>
                                 <button className="delete-btn" type="button">🗑</button>
                                 </td>
                             </tr>
+                            ))):
+                            (
+                                <tr>
+                                 <td colSpan="6">No contacts found</td>
+                                </tr>
+                            )
+                        }
                         </tbody>
                     </table>
                 </div>
