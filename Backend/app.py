@@ -9,6 +9,7 @@ app=Flask(__name__)
 
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True, allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+cursor=db.cursor(dictionary=True, buffered=True)
 
 SECRET_KEY=os.getenv('SECRET_KEY')
 blacklist=set()
@@ -90,12 +91,25 @@ def add_contact():
     phone_no=data.get('phone_no')
     location=data.get('location') or None
     try:
+        if not phone_no.isdigit() or len(phone_no)!=10:
+            return jsonify({"message": "Phone number must be exactly 10 digits"}),400
+        existing_email=None
+        if email:
+            cursor.execute("SELECT * FROM contacts WHERE email=%s",(email,))
+            existing_email=cursor.fetchone()
+        if existing_email:
+            return jsonify({"message": "Email already exists"}),409
+        cursor.execute("SELECT * FROM contacts WHERE phone_no=%s",(phone_no,))
+        existing_phone_no=cursor.fetchone()
+        if existing_phone_no:
+            return jsonify({"message": "Phone number already exists"}),409
         cursor.execute("INSERT INTO contacts(user_id,name,email,phone_no,location)VALUES(%s,%s,%s,%s,%s)",(user_id,name,email,phone_no,location))
         db.commit()
         return jsonify({"message": "Contact added Successfully."}),201
     except Exception as e:
+        db.rollback()
         print(f"Error: {str(e)}")
-        return jsonify({"message": "Failed to add contact"})
+        return jsonify({"message": str(e)}), 500
 
 @app.route('/getContact', methods=['GET'])
 def get_contacts():
