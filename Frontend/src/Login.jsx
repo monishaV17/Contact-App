@@ -32,7 +32,6 @@ function Login() {
             const data=await res.json();
             if(res.ok){
                 localStorage.setItem("token",data.token);
-                console.log("Token:",data.token);
                 showMessage("Login Successful");
                 setEmail('');
                 setPassword('');

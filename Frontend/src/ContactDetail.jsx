@@ -19,6 +19,7 @@ function ContactShow(){
 
     const fetchContacts=useCallback(async() =>{
         const token=localStorage.getItem("token");
+        console.log(token);
     try{
         const res=await fetch(`${API_URL}/getContact`,{
             headers: {Authorization: `Bearer ${token}`}
@@ -77,6 +78,7 @@ useEffect(()=>{
             localStorage.removeItem("token");
             navigate("/");
             showMessage("Successfully logged out");
+            console.log("logged out");
         }
     }
     return (
